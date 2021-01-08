@@ -11,7 +11,13 @@ from config import global_config
 class Timer(object):
     def __init__(self, sleep_interval=0.5):
         # '2018-09-28 22:45:50.000'
-        self.buy_time = datetime.strptime(global_config.getRaw('config','buy_time'), "%Y-%m-%d %H:%M:%S.%f")
+        # buy_time = 2020-12-22 09:59:59.500
+        buy_time_everyday = global_config.getRaw('config', 'buy_time').__str__()
+        localtime = time.localtime(time.time())
+        self.buy_time = datetime.strptime(
+            localtime.tm_year.__str__() + '-' + localtime.tm_mon.__str__() + '-' + localtime.tm_mday.__str__()
+            + ' ' + buy_time_everyday,
+            "%Y-%m-%d %H:%M:%S.%f")
         self.buy_time_ms = int(time.mktime(self.buy_time.timetuple()) * 1000.0 + self.buy_time.microsecond / 1000)
         self.sleep_interval = sleep_interval
 
@@ -46,8 +52,13 @@ class Timer(object):
         while True:
             # 本地时间减去与京东的时间差，能够将时间误差提升到0.1秒附近
             # 具体精度依赖获取京东服务器时间的网络时间损耗
+            duration = self.buy_time_ms - self.local_time() + self.diff_time
             if self.local_time() - self.diff_time >= self.buy_time_ms:
                 logger.info('时间到达，开始执行……')
                 break
             else:
                 time.sleep(self.sleep_interval)
+                # if duration <= 3000 :
+                #     self.sleep_interval=0.1
+                #     self.diff_time = self.local_jd_time_diff()
+                #     logger.info("抢购倒计时: %s 毫秒", duration)

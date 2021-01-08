@@ -309,6 +309,7 @@ class JdSeckill(object):
         @functools.wraps(func)
         def new_func(self, *args, **kwargs):
             if not self.qrlogin.is_login:
+                send_wechat('登录提醒',"没有登录，请更换cookie")
                 logger.info("{0} 需登陆后调用，开始扫码登陆".format(func.__name__))
                 self.login_by_qrcode()
             return func(self, *args, **kwargs)
@@ -354,7 +355,13 @@ class JdSeckill(object):
         """
         抢购
         """
-        while True:
+        logger.info('用户:{}'.format(self.get_username()))
+        logger.info('商品名称:{}'.format(self.get_sku_title()))
+        # 定时
+        self.timers.start()
+        # 开始抢购时间，秒
+        start_skill_time = round(time.time())
+        while (round(time.time()) - start_skill_time) < 60:
             try:
                 self.request_seckill_url()
                 while True:
@@ -462,9 +469,7 @@ class JdSeckill(object):
 
     def request_seckill_url(self):
         """访问商品的抢购链接（用于设置cookie等"""
-        logger.info('用户:{}'.format(self.get_username()))
-        logger.info('商品名称:{}'.format(self.get_sku_title()))
-        self.timers.start()
+
         self.seckill_url[self.sku_id] = self.get_seckill_url()
         logger.info('访问商品的抢购连接...')
         headers = {
@@ -619,7 +624,7 @@ class JdSeckill(object):
             return True
         else:
             logger.info('抢购失败，返回信息:{}'.format(resp_json))
-            if global_config.getRaw('messenger', 'enable') == 'true':
-                error_message = '抢购失败，返回信息:{}'.format(resp_json)
-                send_wechat(error_message)
+            # if global_config.getRaw('messenger', 'enable') == 'true':
+            #     error_message = '抢购失败，返回信息:{}'.format(resp_json)
+            #     send_wechat(error_message)
             return False

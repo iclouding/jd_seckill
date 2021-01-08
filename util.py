@@ -81,20 +81,23 @@ def get_random_useragent():
 
 
 def wait_some_time():
-    time.sleep(random.randint(100, 300) / 1000)
+    time.sleep(random.randint(0, 200) / 1000)
 
-
-def send_wechat(message):
+def send_wechat(tittle, message):
     """推送信息到微信"""
     url = 'http://sc.ftqq.com/{}.send'.format(global_config.getRaw('messenger', 'sckey'))
     payload = {
-        "text":'抢购结果',
+        "text": tittle,
         "desp": message
     }
     headers = {
         'User-Agent':global_config.getRaw('config', 'DEFAULT_USER_AGENT')
     }
     requests.get(url, params=payload, headers=headers)
+
+
+def send_wechat(message):
+    send_wechat('抢购结果', message)
 
 
 def response_status(resp):
