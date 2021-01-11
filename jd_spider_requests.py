@@ -1,3 +1,4 @@
+import datetime
 import random
 import time
 import requests
@@ -19,7 +20,7 @@ from util import (
     response_status,
     save_image,
     open_image,
-    email
+    email, send_wechat_with_tittle
 )
 
 
@@ -309,7 +310,7 @@ class JdSeckill(object):
         @functools.wraps(func)
         def new_func(self, *args, **kwargs):
             if not self.qrlogin.is_login:
-                send_wechat('登录提醒',"没有登录，请更换cookie")
+                send_wechat_with_tittle('登录提醒',"没有登录，请更换cookie")
                 logger.info("{0} 需登陆后调用，开始扫码登陆".format(func.__name__))
                 self.login_by_qrcode()
             return func(self, *args, **kwargs)
@@ -328,6 +329,10 @@ class JdSeckill(object):
         抢购
         """
         self._seckill()
+
+    @check_login
+    def loginChecker(self):
+        print(datetime.datetime.now(), "已登录")
 
     @check_login
     def seckill_by_proc_pool(self, work_count=5):

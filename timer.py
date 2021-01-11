@@ -62,3 +62,7 @@ class Timer(object):
                 #     self.sleep_interval=0.1
                 #     self.diff_time = self.local_jd_time_diff()
                 #     logger.info("抢购倒计时: %s 毫秒", duration)
+                # if duration <= 3000 :
+                #     self.sleep_interval=0.1
+                #     self.diff_time = self.local_jd_time_diff()
+                #     logger.info("抢购倒计时: %s 毫秒", duration)

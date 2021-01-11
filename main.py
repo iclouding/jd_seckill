@@ -8,6 +8,10 @@ def seckill():
     jd_seckill = JdSeckill()
     jd_seckill.seckill_by_proc_pool()
 
+def login_checker():
+    jd_seckill = JdSeckill()
+    jd_seckill.loginChecker()
+
 if __name__ == '__main__':
     a = """
 
@@ -24,10 +28,11 @@ if __name__ == '__main__':
     """
     print(a)
     # 记录当前时间
-    print(datetime.datetime.now())
+    login_checker()
     scheduler = BlockingScheduler()
     # 添加茅台任务
     scheduler.add_job(seckill , "cron", day='*', hour='09', minute='58')
+    scheduler.add_job(login_checker, "cron", day='*', hour='09', minute='50')
     scheduler.start()
 
     # jd_seckill = JdSeckill()

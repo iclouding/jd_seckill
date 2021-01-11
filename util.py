@@ -12,7 +12,6 @@ from email.mime.image import MIMEImage
 from config import global_config
 from jd_logger import logger
 
-
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",
@@ -64,7 +63,7 @@ USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17",
     "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.15 (KHTML, like Gecko) Chrome/24.0.1295.0 Safari/537.15",
     "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.14 (KHTML, like Gecko) Chrome/24.0.1292.0 Safari/537.14"
-    ]
+]
 
 
 def parse_json(s):
@@ -83,21 +82,22 @@ def get_random_useragent():
 def wait_some_time():
     time.sleep(random.randint(0, 200) / 1000)
 
-def send_wechat(tittle, message):
-    """推送信息到微信"""
+
+def send_wechat_with_tittle(tittle, message):
+    """推送信息到微信，带tittle"""
     url = 'http://sc.ftqq.com/{}.send'.format(global_config.getRaw('messenger', 'sckey'))
     payload = {
         "text": tittle,
         "desp": message
     }
     headers = {
-        'User-Agent':global_config.getRaw('config', 'DEFAULT_USER_AGENT')
+        'User-Agent': global_config.getRaw('config', 'DEFAULT_USER_AGENT')
     }
     requests.get(url, params=payload, headers=headers)
 
 
 def send_wechat(message):
-    send_wechat('抢购结果', message)
+    send_wechat_with_tittle('抢购结果', message)
 
 
 def response_status(resp):
@@ -188,4 +188,4 @@ email = Email(
     mail_host=global_config.getRaw('messenger', 'email_host'),
     mail_user=global_config.getRaw('messenger', 'email_user'),
     mail_pwd=global_config.getRaw('messenger', 'email_pwd'),
-    )
+)
